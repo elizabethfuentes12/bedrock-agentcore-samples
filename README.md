@@ -96,6 +96,19 @@ Each lab includes:
 - **Code explanations**: Detailed implementation walkthrough
 - **Cleanup instructions**: Resource removal
 
+### Optional: Generic Deployment Script
+
+For convenience, a generic deployment script is available at the root level:
+
+```bash
+# Deploy with auto-created execution role
+python deploy.py lab01/langgraph
+
+# Deploy with existing execution role
+python deploy.py lab01/langgraph YOUR-AGENT-ROLE
+```
+
+
 ## Key Benefits of AgentCore
 
 ### Traditional vs AgentCore Deployment
