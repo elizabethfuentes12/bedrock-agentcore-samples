@@ -1,4 +1,20 @@
-# Amazon Bedrock AgentCore Labs
+# starting with Amazon Bedrock AgentCore
+
+<div align="center">
+  
+  [![License](https://img.shields.io/badge/License-MIT--0-blue.svg?style=for-the-badge)](LICENSE)
+  [![Python](https://img.shields.io/badge/Python-3.8+-green.svg?style=for-the-badge&logo=python)](https://python.org)
+  [![AWS](https://img.shields.io/badge/AWS-Bedrock-orange.svg?style=for-the-badge&logo=amazon-aws)](https://aws.amazon.com/bedrock/)
+  
+  
+  <br>
+  <p><em>Bring AI agents into production in minutes</em>
+  </p>
+   <p>⭐ Star this repository</p>
+  
+</div>
+
+<div align="center">
 
 This repository contains hands-on labs demonstrating the capabilities of [Amazon Bedrock AgentCore](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/what-is-bedrock-agentcore.html), a suite of services that enables you to deploy and operate highly effective AI agents securely at scale.
 
@@ -22,7 +38,15 @@ Amazon Bedrock AgentCore enables developers to accelerate AI agents into product
 
 ## Labs Overview
 
-### Lab 01: AgentCore Runtime
+| 📓 Notebook | 🎯 Focus & Key Learning | ⏱️ Time | 📊 Level |
+|-------------|------------------------|----------|----------|
+| **01 - [Amazon Bedrock AgentCore Runtime](./01-agentcore-runtime/)** | Text embeddings and PDF processing - Document chunking, embeddings generation, FAISS vector store operations | 10 min | ![Intermediate](https://img.shields.io/badge/-Intermediate-yellow) | 
+| **02 - [Amazon Bedrock AgentCore Memory](./02-agentcore-memory/)** | Visual search capabilities - Image embeddings, multimodal search, natural language image queries | 10 min | ![Intermediate](https://img.shields.io/badge/-Intermediate-yellow) | 
+| **03 - [Amazon Bedrock AgentCore Gateway](./03-agentcore-gateway/)** | Production database setup - PostgreSQL vector operations, pgvector extension, scalable similarity search | 10 min | ![Intermediate](https://img.shields.io/badge/-Intermediate-yellow) | 
+
+---
+
+### Amazon Bedrock AgentCore Runtime
 **Focus**: [Serverless AI Agent Deployment](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-how-it-works.html)
 
 ![image](images/lab_01_runtime.png)
@@ -35,7 +59,7 @@ Deploy production-ready AI agents with just 2 commands using AgentCore Runtime. 
 
 **Key Learning**: Transform prototype agents into production-ready services in minutes, not weeks.
 
-### Lab 02: AgentCore Memory
+### Amazon Bedrock AgentCore Memory
 **Focus**: [Intelligent Memory Capabilities](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/memory.html)
 
 ![memory](images/high_level_memory.png)
@@ -48,7 +72,7 @@ Add context-aware memory to AI agents using AgentCore Memory. This lab covers:
 
 **Key Learning**: Build agents that remember and learn from interactions to provide more intelligent responses.
 
-### Lab 03: AgentCore Gateway
+### Amazon Bedrock AgentCore Gateway
 **Focus**: [Tool Integration and Discovery](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway.html)
 
 ![image](images/lab_03_architecture.png)
@@ -129,7 +153,7 @@ Each lab is self-contained with its own README, code samples, and infrastructure
 
 ---
 
-**Ready to deploy production AI agents?** Start with [Lab 01](./lab01/) to learn the fundamentals of AgentCore Runtime.
+**Ready to deploy production AI agents?** Start with [01-agentcore-runtime](./01-agentcore-runtime/) to learn the fundamentals of AgentCore Runtime.
 
 ---
 
