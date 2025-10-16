@@ -52,8 +52,6 @@ Amazon Bedrock AgentCore enables developers to accelerate AI agents into product
 | **Amazon Bedrock AgentCore Memory** | **Focus**: [Intelligent Memory Capabilities](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/memory.html)<br><br>Add context-aware memory to AI agents using AgentCore Memory. This lab covers:<br>• Short-term memory for conversation context<br>• Long-term memory for user preferences<br>• Cross-session knowledge retention<br>• Personalized agent experiences<br><br>**Key Learning**: Build agents that remember and learn from interactions to provide more intelligent responses. | ![memory](images/high_level_memory.png) |
 | **Amazon Bedrock AgentCore Gateway** | **Focus**: [Tool Integration and Discovery](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway.html)<br><br>>Based on [Integrate Amazon Bedrock AgentCore Gateway with Amazon Bedrock AgentCore Runtime](https://github.com/awslabs/amazon-bedrock-agentcore-samples/tree/main/01-tutorials/02-AgentCore-gateway/04-integration/01-runtime-gateway)<br><br>Transform existing services into agent-compatible tools using AgentCore Gateway. This lab demonstrates:<br>• Converting Lambda functions to MCP tools<br>• Multi-target gateway configuration<br>• AWS IAM authentication for secure access<br>• Tool discovery and pagination<br><br>**Key Learning**: Integrate existing enterprise resources as agent tools without custom development. | ![image](images/lab_03_architecture.png) |
 
->Based on [Integrate Amazon Bedrock AgentCore Gateway with Amazon Bedrock AgentCore Runtime](https://github.com/awslabs/amazon-bedrock-agentcore-samples/tree/main/01-tutorials/02-AgentCore-gateway/04-integration/01-runtime-gateway)
-
 Transform existing services into agent-compatible tools using AgentCore Gateway. This lab demonstrates:
 - Converting Lambda functions to MCP tools
 - Multi-target gateway configuration
@@ -110,9 +108,6 @@ Before starting any lab, ensure you have:
 - [AgentCore Memory Guide](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/memory.html)
 - [AgentCore Gateway Documentation](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway.html)
 - [Programmatic Agent Invocation](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-toolkit.html#invoke-programmatically)
-
-### Tutorials
-- [Deploy Production AI Agents in 2 Commands](https://dev.to/aws/deploy-production-ai-agents-with-amazon-bedrock-agentcore-in-2-commands-obg)
 
 ### Code Examples
 - [AWS Labs AgentCore Samples](https://github.com/awslabs/amazon-bedrock-agentcore-samples/)
