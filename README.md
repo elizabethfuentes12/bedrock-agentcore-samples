@@ -1,4 +1,4 @@
-# starting with Amazon Bedrock AgentCore
+# Starting with Amazon Bedrock AgentCore
 
 <div align="center">
   
@@ -13,8 +13,6 @@
    <p>⭐ Star this repository</p>
   
 </div>
-
-<div align="center">
 
 This repository contains hands-on labs demonstrating the capabilities of [Amazon Bedrock AgentCore](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/what-is-bedrock-agentcore.html), a suite of services that enables you to deploy and operate highly effective AI agents securely at scale.
 
@@ -36,46 +34,23 @@ Amazon Bedrock AgentCore enables developers to accelerate AI agents into product
 | **AgentCore Browser** | Web interaction | Cloud browser, auto-scaling |
 | **AgentCore Observability** | Monitoring | Tracing, dashboards, debugging |
 
-## Labs Overview
+## Overview
 
-| 📓 Notebook | 🎯 Focus & Key Learning | ⏱️ Time | 📊 Level |
+| 📓 Services | 🎯 Focus & Key Learning | ⏱️ Time | 📊 Level |
 |-------------|------------------------|----------|----------|
-| **01 - [Amazon Bedrock AgentCore Runtime](./01-agentcore-runtime/)** | Text embeddings and PDF processing - Document chunking, embeddings generation, FAISS vector store operations | 10 min | ![Intermediate](https://img.shields.io/badge/-Intermediate-yellow) | 
-| **02 - [Amazon Bedrock AgentCore Memory](./02-agentcore-memory/)** | Visual search capabilities - Image embeddings, multimodal search, natural language image queries | 10 min | ![Intermediate](https://img.shields.io/badge/-Intermediate-yellow) | 
-| **03 - [Amazon Bedrock AgentCore Gateway](./03-agentcore-gateway/)** | Production database setup - PostgreSQL vector operations, pgvector extension, scalable similarity search | 10 min | ![Intermediate](https://img.shields.io/badge/-Intermediate-yellow) | 
+| **01 - [Amazon Bedrock AgentCore Runtime](./01-agentcore-runtime/)** | Serverless AI agent deployment with auto-scaling, session management, and built-in security | 10 min | ![Intermediate](https://img.shields.io/badge/-Intermediate-yellow) | 
+| **02 - [Amazon Bedrock AgentCore Memory](./02-agentcore-memory/)** | Context-aware memory for conversation context and cross-session knowledge retention | 10 min | ![Intermediate](https://img.shields.io/badge/-Intermediate-yellow) | 
+| **03 - [Amazon Bedrock AgentCore Gateway](./03-agentcore-gateway/)** | Tool integration and discovery, converting existing services into agent-compatible tools | 10 min | ![Intermediate](https://img.shields.io/badge/-Intermediate-yellow) | 
 
 ---
 
-### Amazon Bedrock AgentCore Runtime
-**Focus**: [Serverless AI Agent Deployment](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-how-it-works.html)
+## Detailed Lab Descriptions
 
-![image](images/lab_01_runtime.png)
-
-Deploy production-ready AI agents with just 2 commands using AgentCore Runtime. This lab demonstrates:
-- Serverless agent deployment with auto-scaling
-- Session management and isolation
-- Built-in security and authentication
-- Integration with Strands Agents framework
-
-**Key Learning**: Transform prototype agents into production-ready services in minutes, not weeks.
-
-### Amazon Bedrock AgentCore Memory
-**Focus**: [Intelligent Memory Capabilities](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/memory.html)
-
-![memory](images/high_level_memory.png)
-
-Add context-aware memory to AI agents using AgentCore Memory. This lab covers:
-- Short-term memory for conversation context
-- Long-term memory for user preferences
-- Cross-session knowledge retention
-- Personalized agent experiences
-
-**Key Learning**: Build agents that remember and learn from interactions to provide more intelligent responses.
-
-### Amazon Bedrock AgentCore Gateway
-**Focus**: [Tool Integration and Discovery](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway.html)
-
-![image](images/lab_03_architecture.png)
+| 📓 Services | 🎯 Focus & Key Learning | 🖼️ Diagram |
+|-------------|------------------------|-------------|
+| **Amazon Bedrock AgentCore Runtime** | **Focus**: [Serverless AI Agent Deployment](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-how-it-works.html)<br><br>Deploy production-ready AI agents with just 2 commands using AgentCore Runtime. This lab demonstrates:<br>• Serverless agent deployment with auto-scaling<br>• Session management and isolation<br>• Built-in security and authentication<br>• Integration with Strands Agents framework<br><br>**Key Learning**: Transform prototype agents into production-ready services in minutes, not weeks. | ![image](images/lab_01_runtime.png) |
+| **Amazon Bedrock AgentCore Memory** | **Focus**: [Intelligent Memory Capabilities](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/memory.html)<br><br>Add context-aware memory to AI agents using AgentCore Memory. This lab covers:<br>• Short-term memory for conversation context<br>• Long-term memory for user preferences<br>• Cross-session knowledge retention<br>• Personalized agent experiences<br><br>**Key Learning**: Build agents that remember and learn from interactions to provide more intelligent responses. | ![memory](images/high_level_memory.png) |
+| **Amazon Bedrock AgentCore Gateway** | **Focus**: [Tool Integration and Discovery](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway.html)<br><br>>Based on [Integrate Amazon Bedrock AgentCore Gateway with Amazon Bedrock AgentCore Runtime](https://github.com/awslabs/amazon-bedrock-agentcore-samples/tree/main/01-tutorials/02-AgentCore-gateway/04-integration/01-runtime-gateway)<br><br>Transform existing services into agent-compatible tools using AgentCore Gateway. This lab demonstrates:<br>• Converting Lambda functions to MCP tools<br>• Multi-target gateway configuration<br>• AWS IAM authentication for secure access<br>• Tool discovery and pagination<br><br>**Key Learning**: Integrate existing enterprise resources as agent tools without custom development. | ![image](images/lab_03_architecture.png) |
 
 >Based on [Integrate Amazon Bedrock AgentCore Gateway with Amazon Bedrock AgentCore Runtime](https://github.com/awslabs/amazon-bedrock-agentcore-samples/tree/main/01-tutorials/02-AgentCore-gateway/04-integration/01-runtime-gateway)
 
@@ -84,8 +59,6 @@ Transform existing services into agent-compatible tools using AgentCore Gateway.
 - Multi-target gateway configuration
 - AWS IAM authentication for secure access
 - Tool discovery and pagination
-
-**Key Learning**: Integrate existing enterprise resources as agent tools without custom development.
 
 ## Getting Started
 
@@ -120,14 +93,6 @@ python deploy.py lab01/langgraph YOUR-AGENT-ROLE
 | ❌ Manual scaling | ✅ Auto-scaling |
 | ❌ Complex security | ✅ Built-in security |
 | ❌ DevOps expertise required | ✅ 2 commands |
-
-### Enterprise-Grade Features
-
-- **Security**: Built-in authentication, session isolation, and credential management
-- **Scalability**: Automatic scaling based on demand with no infrastructure management
-- **Reliability**: Versioned deployments with rollback capabilities
-- **Observability**: Comprehensive monitoring, tracing, and debugging tools
-- **Framework Agnostic**: Works with LangGraph, CrewAI, Strands Agents, and custom frameworks
 
 ## Prerequisites
 
