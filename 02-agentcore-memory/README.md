@@ -8,7 +8,7 @@ Amazon Bedrock AgentCore Memory is a fully managed service that gives your AI ag
 
 ### AgentCore Services
 
-- **AgentCore Runtime** - Serverless execution with auto-scaling and session management
+- **AgentCore Runtime** ⭐ - Serverless execution with auto-scaling and session management
 - **AgentCore Identity** - Secure credential management for API keys and tokens  
 - **AgentCore Memory** ⭐ - State persistence and conversation history
 - **AgentCore Code Interpreter** - Secure code execution sandbox
@@ -28,12 +28,8 @@ This project demonstrates **AgentCore Memory** with two types of memory:
 ### Short-term Memory
 Captures turn-by-turn interactions within a single session. Agents maintain immediate context without requiring users to repeat information.
 
-**Example**: When a user asks, "What's the weather like in Seattle?" and follows up with "What about tomorrow?", the agent relies on recent conversation history to understand that "tomorrow" refers to the weather in Seattle.
-
 ### Long-term Memory
 Automatically extracts and stores key insights from conversations across multiple sessions, including user preferences, important facts, and session summaries.
-
-**Example**: If a customer mentions they prefer window seats during flight booking, the agent stores this preference in long-term memory. In future interactions, the agent can proactively offer window seats.
 
 ## Quick Start
 
@@ -42,12 +38,7 @@ Automatically extracts and stores key insights from conversations across multipl
 pip install -r requirements.txt
 ```
 
-2. **Test locally**
-```bash
-python my_agent_memory.py
-```
-
-3. **Deploy to production**
+2. **Deploy to production**
 ```bash
 # Configure with memory enabled
 agentcore configure -e my_agent_memory.py
@@ -58,7 +49,7 @@ agentcore configure -e my_agent_memory.py
 agentcore launch
 ```
 
-4. **Test memory functionality**
+3. **Test memory functionality**
 
 The test scripts use boto3 to programmatically invoke your deployed agent via the `InvokeAgentRuntime` operation. This allows automated testing of memory capabilities across different sessions.
 

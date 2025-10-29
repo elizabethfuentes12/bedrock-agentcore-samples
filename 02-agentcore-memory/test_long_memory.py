@@ -18,6 +18,7 @@ def test_long_memory(agent_arn, region=None):
     # Generate session IDs
     session_1 = str(uuid.uuid4())
     session_2 = str(uuid.uuid4())
+    user_1 = str(uuid.uuid4())
     
     print(f"Testing long-term memory across sessions")
     print(f"Region: {region}")
@@ -25,14 +26,18 @@ def test_long_memory(agent_arn, region=None):
     
     try:
         # Session 1: Store user information
+        print(f"User: {user_1}")
         print(f"Session 1: {session_1}")
         print("Storing user preferences...")
+        prompt1 = "My name is Sarah and I'm a software engineer. I prefer Python over JavaScript."
+        print(f"😊 Prompt 1: {prompt1}")
         
-        payload1 = json.dumps({"prompt": "My name is Sarah and I'm a software engineer. I prefer Python over JavaScript."}).encode()
+        payload1 = json.dumps({"prompt": prompt1}).encode()
         
         response1 = client.invoke_agent_runtime(
             agentRuntimeArn=agent_arn,
             runtimeSessionId=session_1,
+            runtimeUserId = user_1,
             payload=payload1,
             qualifier="DEFAULT"
         )
@@ -42,22 +47,22 @@ def test_long_memory(agent_arn, region=None):
             content1.append(chunk.decode('utf-8'))
         
         result1 = json.loads(''.join(content1))
-        print(f"Agent: {result1.get('response', 'No response')}")
+        print(f"🤖 Agent: {result1.get('response', 'No response')}")
         print()
-        
-        # Wait for long-term memory extraction
-        print("Waiting 25 seconds for long-term memory extraction...")
-        time.sleep(25)
+    
         
         # Session 2: Test memory recall
+        print(f"User: {user_1}")
         print(f"Session 2: {session_2}")
         print("Testing cross-session memory recall...")
+        prompt2 = "What do you remember about me? What's my name and what do I prefer?"
+        print(f"😊 Prompt 2: {prompt2}")
         
-        payload2 = json.dumps({"prompt": "What do you remember about me? What's my name and what do I prefer?"}).encode()
-        
+        payload2 = json.dumps({"prompt": prompt2}).encode()        
         response2 = client.invoke_agent_runtime(
             agentRuntimeArn=agent_arn,
             runtimeSessionId=session_2,  # Different session
+            runtimeUserId = user_1,
             payload=payload2,
             qualifier="DEFAULT"
         )
@@ -67,7 +72,7 @@ def test_long_memory(agent_arn, region=None):
             content2.append(chunk.decode('utf-8'))
         
         result2 = json.loads(''.join(content2))
-        print(f"Agent: {result2.get('response', 'No response')}")
+        print(f"🤖 Agent: {result2.get('response', 'No response')}")
         
         print("\n✓ Long-term memory test completed")
         

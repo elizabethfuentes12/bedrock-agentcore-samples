@@ -24,7 +24,10 @@ def test_short_memory(agent_arn, region=None):
     try:
         # First message - establish context
         print("Message 1: Setting context...")
-        payload1 = json.dumps({"prompt": "My name is Alice and I like chocolate ice cream"}).encode()
+        print(f"Session: {session_id}")
+        prompt = "My name is Alice and I like chocolate ice cream"
+        print("😊 Prompt 1: ",prompt)
+        payload1 = json.dumps({"prompt": prompt}).encode()
         
         response1 = client.invoke_agent_runtime(
             agentRuntimeArn=agent_arn,
@@ -38,13 +41,16 @@ def test_short_memory(agent_arn, region=None):
             content1.append(chunk.decode('utf-8'))
         
         result1 = json.loads(''.join(content1))
-        print(f"Agent: {result1.get('response', 'No response')}")
+        print(f"🤖 Agent: {result1.get('response', 'No response')}")
         print()
         
         # Second message - test memory recall
         print("Message 2: Testing memory recall...")
-        payload2 = json.dumps({"prompt": "What is my name and what do I like?"}).encode()
-        
+        print(f"Session: {session_id}")
+        prompt = "What is my name and what do I like?"
+        print("😊 Prompt 2: ",prompt)
+        payload2 = json.dumps({"prompt": prompt}).encode()
+
         response2 = client.invoke_agent_runtime(
             agentRuntimeArn=agent_arn,
             runtimeSessionId=session_id,  # Same session
@@ -57,7 +63,7 @@ def test_short_memory(agent_arn, region=None):
             content2.append(chunk.decode('utf-8'))
         
         result2 = json.loads(''.join(content2))
-        print(f"Agent: {result2.get('response', 'No response')}")
+        print(f"🤖 Agent: {result2.get('response', 'No response')}")
         
         print("\n✓ Short-term memory test completed")
         

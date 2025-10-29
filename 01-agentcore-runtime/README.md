@@ -1,4 +1,4 @@
-# Amazon Bedrock AgentCore Runtime Lab
+# Building a Calculator Agent with Amazon Bedrock AgentCore
 
 Deploy production-ready AI agents in minutes with Amazon Bedrock AgentCore Runtime.
 
@@ -6,68 +6,186 @@ Deploy production-ready AI agents in minutes with Amazon Bedrock AgentCore Runti
 
 Amazon Bedrock AgentCore is a suite of services that simplifies deploying AI agents to production. Instead of weeks configuring infrastructure, you get production-ready agents with just 2 commands.
 
-### AgentCore Services
+### Amazon Bedrock AgentCore Services
 
-- **AgentCore Runtime** ⭐ - Serverless execution with auto-scaling and session management
-- **AgentCore Identity** - Secure credential management for API keys and tokens  
-- **AgentCore Memory** - State persistence and conversation history
-- **AgentCore Code Interpreter** - Secure code execution sandbox
-- **AgentCore Browser** - Cloud browser automation
-- **AgentCore Gateway** - API management and tool discovery
-- **AgentCore Observability** - Monitoring, tracing, and debugging
+- **Amazon Bedrock AgentCore Runtime** ⭐ - Serverless execution with auto-scaling and session management
+- **Amazon Bedrock AgentCore Identity** - Secure credential management for API keys and tokens  
+- **Amazon Bedrock AgentCore Memory** - State persistence and conversation history
+- **Amazon Bedrock AgentCore Code Interpreter** - Secure code execution sandbox
+- **Amazon Bedrock AgentCore Browser** - Cloud browser automation
+- **Amazon Bedrock AgentCore Gateway** - API management and tool discovery
+- **Amazon BedrockAgentCore Observability** - Monitoring, tracing, and debugging
 
-## This Lab: AgentCore Runtime
+## Calculator Agent with AgentCore Runtime
 
-This project demonstrates **AgentCore Runtime** - the core service that handles:
+This project demonstrates **AgentCore Runtime** by building a calculator agent that handles mathematical computations using the Strands Agents framework with automatic scaling and session isolation.
 
-- Serverless agent execution
-- Automatic scaling based on demand
-- Session isolation in dedicated containers
-- Container orchestration and lifecycle management
+## Key Benefits
 
-![image](../images/lab_01_runtime.png)
+- **10 minutes** from code to production endpoint
+- **Serverless** - no infrastructure management
+- **Auto-scaling** - handles traffic spikes automatically
+- **Session-aware** - maintains conversation context across invocations
+- **Built-in security** - AWS security best practices included
 
-## Any Agent Framework Support
 
-AgentCore Runtime supports multiple AI agent frameworks beyond Strands Agents:
+## Core Components
 
-- **Strands Agents** - Featured in this lab
-- **LangGraph** - Example included in `langgraph/` folder
-- **Google ADK** - Agent Development Kit
-- **OpenAI Agents SDK** - OpenAI's agent framework
-- **Microsoft AutoGen** - Multi-agent conversation framework
-- **CrewAI** - Multi-agent collaboration platform
+1. **Amazon Bedrock AgentCore Runtime**: Provides a secure serverless runtime for deploying and scaling dynamic agents using any framework with any model provider.
 
-For complete examples and integration patterns, see the [Any Agent Framework Guide](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/using-any-agent-framework.html).
+2. **Strands Agents**: An agent framework that build production-ready, multi-agent AI systems in a few lines of code. 
 
-## Any Foundation Model Support
+## Prerequisites
 
-AgentCore Runtime supports any foundation model provider: **Amazon Bedrock, OpenAI, Anthropic Claude, Google Gemini,** and others through standard API integrations (see [`my_agent_anymodel.py`](my_agent_anymodel.py) example).
+Before you begin, verify that you have:
 
-For complete model integration examples, see the [Any Foundation Model Guide](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/using-any-model.html).
+- **AWS Account** with appropriate permissions
+- **Python 3.10+** environment
+- **AWS CLI configured** with `aws configure`
+- **AWS Permissions**: Attach the [BedrockAgentCoreFullAccess](https://docs.aws.amazon.com/aws-managed-policy/latest/reference/BedrockAgentCoreFullAccess.html) AWS managed policy and the [starter toolkit policy](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-permissions.html#use-the-starter-toolkit)
+- **Model Access**: Anthropic Claude 3.5 Haiku (or the model of your preference) [enabled in the Amazon Bedrock console](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html)
 
-## Session Management
+> **New AWS customers receive up to $200 in credits**  
+> Get started at no cost with the [AWS Free Tier](https://aws.amazon.com/free/).
 
-AgentCore Runtime provides **session isolation** to maintain conversation context across multiple invocations:
+## Step 1: AWS Account Setup
 
-- **Session Duration**: Up to 8 hours maximum lifetime
-- **Idle Timeout**: 15 minutes (900 seconds) by default  
-- **Context Preservation**: Maintains state between invocations using the same session ID
-- **Isolation**: Each session runs in its own dedicated microVM for security
+### Create AWS Account and Configure Permissions
 
-Sessions help preserve conversation context, allowing agents to provide coherent responses that build on previous interactions.
+If you're using admin access, you can skip the detailed permissions setup. Otherwise, follow [these steps to create an AWS IAM user](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html) and attach the [BedrockAgentCoreFullAccess](https://docs.aws.amazon.com/aws-managed-policy/latest/reference/BedrockAgentCoreFullAccess.html) AWS managed policy.
 
-## Quick Start
+### Configure the AWS CLI
 
-1. **Install dependencies**
+Run the following command in your terminal:
+
 ```bash
-pip install -r requirements.txt
+aws configure
 ```
 
-2. **Test locally**
+Enter your credentials:
+- `AWS Access Key ID [None]`: (from your downloaded CSV file)
+- `AWS Secret Access Key [None]`: (from your downloaded CSV file)
+- `Default region name [None]`:  (your AWS Region)
+- `Default output format [None]`: `json`
+
+## Step 2: Set Up Project and Install Dependencies
+
+Create a project folder and install the required packages:
+
+```bash
+mkdir agentcore-calculator-agent
+cd agentcore-calculator-agent
+python3 -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+```
+
+Install the necessary dependencies:
+
+```bash
+pip install --upgrade pip
+pip install bedrock-agentcore strands-agents bedrock-agentcore-starter-toolkit strands-agents-tools
+```
+
+**Required packages:**
+- `bedrock-agentcore` - Amazon Bedrock AgentCore SDK
+- `strands-agents` - Strands Agents SDK
+- `bedrock-agentcore-starter-toolkit` - Amazon Bedrock AgentCore starter toolkit
+- `strands-agents-tools` - Tools for Strands Agents including calculator functionality
+
+Verify installation:
+```bash
+agentcore --help
+```
+
+## Step 3: Create Your Agent
+
+Create a deployment folder to keep your agent code organized:
+
+```bash
+mkdir deployment
+cd deployment
+```
+
+Create `my_agent.py`:
+
+```python
+from bedrock_agentcore import BedrockAgentCoreApp
+from strands import Agent
+import os
+from strands_tools import calculator
+
+# System prompt for the agent
+SYSTEM_PROMPT = "You are a helpful assistant that can perform calculations. Use the calculate tool for any math problems."
+
+# Model configuration from environment variable
+MODEL_ID = os.getenv("MODEL_ID", "us.anthropic.claude-3-5-haiku-20241022-v1:0")
+
+# Global agent instance for reuse across invocations
+agent = None
+
+def create_agent(tools):
+    """Create agent with lazy loading pattern for performance"""
+    global agent
+    if agent is None:
+        agent = Agent(
+            model=MODEL_ID,
+            tools=[tools],
+            system_prompt=SYSTEM_PROMPT
+        )
+    return agent
+
+# Initialize the Bedrock Agent Core application
+app = BedrockAgentCoreApp()
+
+@app.entrypoint
+def invoke(payload):
+    """AgentCore Runtime entry point"""
+    agent = create_agent(calculator)
+    prompt = payload.get("prompt", "Hello!")
+    result = agent(prompt)
+    
+    return {
+        "response": result.message.get('content', [{}])[0].get('text', str(result))
+    }
+
+if __name__ == "__main__":
+    app.run()
+```
+
+Create `requirements.txt`:
+
+```
+bedrock-agentcore
+bedrock-agentcore-starter-toolkit
+strands-agents
+strands-agents-tools
+```
+
+## Step 4: Understanding the Calculator Agent Code
+
+The agent implements several key components:
+
+### AgentCore Runtime Entry Point
+
+The `@app.entrypoint` decorator makes your agent deployable to AgentCore Runtime. This is the only difference between a local script and a cloud-deployed agent.
+
+### Agent Initialization with Lazy Loading
+
+The agent is initialized once per session to preserve state and avoid performance costs. Amazon Bedrock AgentCore Runtime provides dedicated containers with up to 8 hours lifetime or 15 minutes of inactivity timeout.
+
+### Calculator Tool
+
+The agent includes a calculator tool from `strands-tools` for performing mathematical operations.
+
+## Step 5: Test Locally 
+
 ```bash
 python my_agent.py
+```
 
+Test
+
+```bash
 # In another terminal, test with curl
 curl -X POST http://localhost:8080/invocations \
   -H "Content-Type: application/json" \
@@ -76,101 +194,168 @@ curl -X POST http://localhost:8080/invocations \
   }'
 ```
 
-3. **Deploy to production**
+## Step 6: Configure and Deploy to AgentCore Runtime
+
+The AgentCore starter toolkit will automatically create all necessary AWS resources for you, including IAM roles with least-privilege permissions, following AWS security best practices. This is much safer than creating overly permissive roles manually.
+
+### Configure the Agent
+
 ```bash
 agentcore configure -e my_agent.py
+```
+
+When prompted:
+- **Execution Role**: Press Enter to auto-create a role with minimal required permissions
+- **ECR Repository**: Press Enter to auto-create
+- **Requirements File**: Confirm the detected requirements.txt
+- **OAuth Configuration**: Type `no`
+- **Request Header Allowlist**: Type `no`
+
+### Deploy the Agent
+
+```bash
 agentcore launch
 ```
 
-4. **Invoke programmatically**
-```bash
-# Using command line arguments
-python invoke_agent.py "AGENT_ARN" "Your prompt here"
+This command:
+- Creates an IAM execution role with minimal required permissions
+- Builds your container using AWS CodeBuild (no Docker required locally)
+- Creates [Amazon ECR](https://aws.amazon.com/ecr/) repository
+- Deploys your agent to Amazon Bedrock AgentCore Runtime
+- Configures CloudWatch logging
 
-# Using environment variables
-export AGENT_ARN="your-agent-arn"
+Note the Agent ARN from the output - you'll need it for programmatic invocation.
+
+### Check Deployment Status
+
+```bash
+agentcore status
+```
+
+### Find Your Resources
+
+After deployment, view your resources in the AWS Console:
+
+| Resource | Location |
+|----------|----------|
+| Agent Logs | CloudWatch → Log groups → `/aws/bedrock-agentcore/runtimes/{agent-id}-DEFAULT` |
+| Container Images | ECR → Repositories → `bedrock-agentcore-{agent-name}` |
+| Build Logs | CodeBuild → Build history |
+| IAM Role | IAM → Roles → Search for "BedrockAgentCore" |
+
+## Step 7: Test Your Deployed Agent
+
+### Simple Invocation
+
+Test your deployed agent with the simplest possible command:
+
+```bash
+agentcore invoke '{"prompt": "What is 50 plus 30?"}'
+```
+
+### Test Conversation Memory
+
+Test that the agent maintains context within a session:
+
+```bash
+agentcore invoke '{"prompt": "Now multiply that result by 2"}'
+```
+
+> AgentCore Runtime automatically provides session isolation and memory management.
+
+## Step 8: Invoke from Production Applications
+
+For production applications, use the [InvokeAgentRuntime](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-invoke-agent.html) operation from [AWS SDK](https://aws.amazon.com/what-is/sdk/). 
+
+```python
+    # Invoke the agent
+    response = client.invoke_agent_runtime(
+        agentRuntimeArn=agent_arn,
+        runtimeSessionId=session_id, #Must be 33+ characters
+        payload=payload,
+        qualifier="DEFAULT"
+    )
+```
+
+Use [invoke_agent.py](invoke_agent.py) application to test the agent.
+
+Run the script to test both calculation capabilities and memory:
+
+```bash
+# Set your agent ARN (get from agentcore status)
+export AGENT_ARN="YOUR-ARN"
+
+# Run the test script
 python invoke_agent.py
 ```
 
-## Response Streaming
+The script will test:
+- Basic calculations
+- Memory persistence within a session
+- Mathematical operations
+- Conversation context retention
 
-AgentCore Runtime supports streaming responses for real-time user experiences. The streaming agent uses `async/await` and `yield` to stream responses as they're generated.
+**Key Points for Production Use:**
+- **Agent ARN**: Get this from `agentcore status` output
+- **Session IDs**: Must be 33+ characters for session persistence
+- **Authentication**: Uses your AWS credentials (IAM roles, access keys, etc.)
 
-Example streaming agent ([`my_agent_streaming.py`](my_agent_streaming.py)):
-```python
-@app.entrypoint
-async def agent_invocation(payload):
-    user_message = payload.get("prompt", "Hello!")
-    stream = agent.stream_async(user_message)
-    async for event in stream:
-        yield (event)
-```
 
-Test streaming responses:
+For more troubleshooting information, see [Troubleshoot Amazon Bedrock AgentCore Runtime](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/troubleshoot-runtime.html).
+
+## Step 9: Deploy with AWS SDK Python Boto3
+
+Deploy agents using with the [create_agent_runtime](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/bedrock-agentcore-control/client/create_agent_runtime.html) operation from AWS SDK Python Boto3.
+
 ```bash
-# Deploy streaming agent
-agentcore configure -e my_agent_streaming.py
-agentcore launch
+# Set the agent code file
+export ENTRYPOINT="my_agent.py"
 
-# Test streaming
-python invoke_streaming_agent.py "STREAMING_AGENT_ARN" "Tell me a story"
+# Deploy the agent
+python deploy_my_agent.py
 ```
 
-5. **Test session management**
+## Step 10: Using Claude Anthropic Model (optional)
+
+Add the `strands-agents[anthropic]` dependency to your requirements.txt for the [Strands Agent Framework](https://strandsagents.com/latest/documentation/docs/user-guide/concepts/model-providers/anthropic/):
+
 ```bash
-# Demonstrate session-aware conversations
-python session_example.py "AGENT_ARN"
+# Set your Claude API key
+export CLAUDE_APIKEY="YOUR-APIKEY"
 
-# Or using environment variables
-export AGENT_ARN="your-agent-arn"
-python session_example.py
+# Set the agent code file
+export ENTRYPOINT="my_agent_claudemodel.py"
+
+# Deploy the agent
+python deploy_my_agent.py
 ```
 
-For detailed programmatic invocation, see the [Invoke Agent Programmatically Guide](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-toolkit.html#invoke-programmatically).
+Learn more about this operation in the [AWS API Documentation](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/bedrock-agentcore-control/client/create_agent_runtime.html).
 
-## What's Included
+Test your deployed agent:
 
-- [`my_agent.py`](my_agent.py) - Basic agent with AgentCore Runtime integration
-- [`my_agent_anymodel.py`](my_agent_anymodel.py) - Agent using Anthropic Claude with API key authentication
-- [`my_agent_streaming.py`](my_agent_streaming.py) - Streaming agent example
-- [`invoke_agent.py`](invoke_agent.py) - Script to invoke deployed agent programmatically
-- [`invoke_streaming_agent.py`](invoke_streaming_agent.py) - Script to test streaming responses
-- [`session_example.py`](session_example.py) - Demonstrates session-aware conversations
-- [`langgraph/`](langgraph/) - LangGraph agent example with invoke script
-- [`requirements.txt`](requirements.txt) - Required packages for AgentCore and Strands Agents
-- [`.bedrock_agentcore.yaml`](.bedrock_agentcore.yaml) - AgentCore configuration
-- [`.bedrock_agentcore/`](.bedrock_agentcore/) - Generated deployment artifacts
+```bash
+# Set your agent ARN (from deploy output)
+export AGENT_ARN="YOUR-ARN"
 
-This project was created following the [AgentCore Starter Toolkit Guide](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-toolkit.html).
+# Run the test script
+python invoke_agent.py
+```
 
-## Key Benefits
+To learn how to deploy with other model providers using Strands Agents, check out the [Strands Agents documentation](https://strandsagents.com/latest/documentation/docs/user-guide/concepts/model-providers/amazon-bedrock/).
 
-- **15 minutes** from code to production endpoint
-- **Serverless** - no infrastructure management
-- **Auto-scaling** - handles traffic spikes automatically
-- **Session-aware** - maintains conversation context
-- **Built-in security** - AWS security best practices included
+## Step 10: Clean Up
 
-## Prerequisites
-
-- AWS account with appropriate permissions
-- Python 3.10+ environment
-- AWS CLI configured
-
-For detailed permission requirements, see the [AgentCore Runtime Permissions Guide](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-permissions.html).
-
-## Clean Up
-
-If you no longer want to host the agent in the AgentCore Runtime, use the destroy command to delete the AWS resources that the starter toolkit created for you.
+When you're done experimenting, clean up all resources:
 
 ```bash
 agentcore destroy
 ```
 
-## Next Steps
+This removes:
+- AgentCore Runtime deployment
+- ECR repository and images
+- Auto-created IAM roles
+- CloudWatch log groups
 
-Ready to configure and deploy? You'll need:
-- IAM role for deployment
-- API keys configured in AgentCore Identity
 
-*This lab focuses on AgentCore Runtime. For complete production deployments, you'll also use AgentCore Identity for secure credential management.*

@@ -7,7 +7,7 @@ import logging
 
 def deploy_infrastructure():
     """Deploy CloudFormation stack for customer support infrastructure"""
-    cf_client = boto3.client('cloudformation')
+    cf_client = boto3.client('cloudformation',region_name="us-west-2")
     
     stack_name = "customer-support-lambda-stack"
     template_file = "cloudformation/customer_support_lambda.yaml"
@@ -46,7 +46,7 @@ def deploy_infrastructure():
 
 def create_nasa_credentials():
     """Create NASA API credential provider"""
-    identity_client = boto3.client('bedrock-agentcore-control')
+    identity_client = boto3.client('bedrock-agentcore-control', region_name="us-west-2")
     
     # Get NASA API key from user
     nasa_api_key = getpass.getpass(prompt='Enter your NASA API Key (get it free at https://api.nasa.gov/): ')
@@ -67,8 +67,8 @@ def create_nasa_credentials():
 
 def create_gateway(lambda_arn, gateway_role_arn, runtime_role_arn):
     """Create AgentCore Gateway with Lambda and NASA API targets"""
-    agentcore_client = boto3.client('bedrock-agentcore-control')
-    identity_client = boto3.client('bedrock-agentcore-control')
+    agentcore_client = boto3.client('bedrock-agentcore-control',region_name="us-west-2")
+    identity_client = boto3.client('bedrock-agentcore-control',region_name="us-west-2")
     
     gateway_name = "customer-support-gateway"
     lambda_target_name = "CustomerSupportLambda"
