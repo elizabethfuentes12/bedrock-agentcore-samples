@@ -7,7 +7,7 @@ def create_model():
     """Create the AnthropicModel model with the API key"""
     return  AnthropicModel(
         client_args={
-            "api_key": "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"
+            "api_key": os.environ["CLAUDE_APIKEY"]
         },
         # **model_config
         max_tokens=4000,
