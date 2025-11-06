@@ -29,7 +29,7 @@ Amazon Bedrock AgentCore enables developers to accelerate AI agents into product
 | **AgentCore Runtime** | Serverless execution | Auto-scaling, session management, container orchestration |
 | **AgentCore Identity** | Credential management | API keys, OAuth tokens, secure vault |
 | **AgentCore Memory** | State persistence | Short-term memory, long-term storage |
-| **AgentCore Gateway** | API management | Tool discovery, service integration |
+| **AgentCore Gateway** | API management and tool discovery | Tool discovery, service integration |
 | **AgentCore Code Interpreter** | Code execution | Secure sandbox, data analysis |
 | **AgentCore Browser** | Web interaction | Cloud browser, auto-scaling |
 | **AgentCore Observability** | Monitoring | Tracing, dashboards, debugging |
@@ -52,11 +52,7 @@ Amazon Bedrock AgentCore enables developers to accelerate AI agents into product
 | **Amazon Bedrock AgentCore Memory** | **Focus**: [Intelligent Memory Capabilities](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/memory.html)<br><br>Add context-aware memory to AI agents using AgentCore Memory. This lab covers:<br>• Short-term memory for conversation context<br>• Long-term memory for user preferences<br>• Cross-session knowledge retention<br>• Personalized agent experiences<br><br>**Key Learning**: Build agents that remember and learn from interactions to provide more intelligent responses. | ![memory](images/high_level_memory.png) |
 | **Amazon Bedrock AgentCore Gateway** | **Focus**: [Tool Integration and Discovery](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/gateway.html)<br><br>>Based on [Integrate Amazon Bedrock AgentCore Gateway with Amazon Bedrock AgentCore Runtime](https://github.com/awslabs/amazon-bedrock-agentcore-samples/tree/main/01-tutorials/02-AgentCore-gateway/04-integration/01-runtime-gateway)<br><br>Transform existing services into agent-compatible tools using AgentCore Gateway. This lab demonstrates:<br>• Converting Lambda functions to MCP tools<br>• Multi-target gateway configuration<br>• AWS IAM authentication for secure access<br>• Tool discovery and pagination<br><br>**Key Learning**: Integrate existing enterprise resources as agent tools without custom development. | ![image](images/lab_03_architecture.png) |
 
-Transform existing services into agent-compatible tools using AgentCore Gateway. This lab demonstrates:
-- Converting Lambda functions to MCP tools
-- Multi-target gateway configuration
-- AWS IAM authentication for secure access
-- Tool discovery and pagination
+
 
 ## Getting Started
 
@@ -73,10 +69,10 @@ For convenience, a generic deployment script is available at the root level:
 
 ```bash
 # Deploy with auto-created execution role
-python deploy.py lab01/langgraph
+python deploy.py 01-agentcore-runtime
 
 # Deploy with existing execution role
-python deploy.py lab01/langgraph YOUR-AGENT-ROLE
+python deploy.py 01-agentcore-runtime YOUR-AGENT-ROLE
 ```
 
 
@@ -115,11 +111,12 @@ Before starting any lab, ensure you have:
 ## Lab Structure
 
 ```
-test-ga/
-├── lab01/          # AgentCore Runtime - Basic deployment
-├── lab02/          # AgentCore Memory - Context-aware agents  
-├── lab03/          # AgentCore Gateway - Tool integration
-└── README.md       # This overview
+bedrock-agentcore-samples/
+├── 01-agentcore-runtime/    # AgentCore Runtime - Basic deployment
+├── 02-agentcore-memory/     # AgentCore Memory - Context-aware agents  
+├── 03-agentcore-gateway/    # AgentCore Gateway - Tool integration
+├── agentcore-cdk/          # CDK deployment templates
+└── README.md               # This overview
 ```
 
 Each lab is self-contained with its own README, code samples, and infrastructure templates.

@@ -13,17 +13,12 @@ Amazon Bedrock AgentCore Memory is a fully managed service that gives your AI ag
 - **AgentCore Memory** ⭐ - State persistence and conversation history
 - **AgentCore Code Interpreter** - Secure code execution sandbox
 - **AgentCore Browser** - Cloud browser automation
-- **AgentCore Gateway** - API management and tool discovery
+- **AgentCore Gateway** - Connects agent to tools and data
 - **AgentCore Observability** - Monitoring, tracing, and debugging
 
 ## This Lab: AgentCore Memory
 
 This project demonstrates **AgentCore Memory** with two types of memory:
-
-- **Short-term memory** - Conversation context within sessions
-- **Long-term memory** - Persistent knowledge across sessions
-
-## Memory Types
 
 ### Short-term Memory
 Captures turn-by-turn interactions within a single session. Agents maintain immediate context without requiring users to repeat information.
@@ -31,46 +26,92 @@ Captures turn-by-turn interactions within a single session. Agents maintain imme
 ### Long-term Memory
 Automatically extracts and stores key insights from conversations across multiple sessions, including user preferences, important facts, and session summaries.
 
-## Quick Start
+## Prerequisites
 
-1. **Install dependencies**
+- [AWS Account](https://aws.amazon.com/account/) with [appropriate permissions](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-permissions.html)
+- Python 3.10+ installed
+- [AWS CLI configured](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+- Basic understanding of [AI agents](https://aws.amazon.com/what-is/ai-agents/) and [AWS services](https://aws.amazon.com/what-is-aws/)
+
+## Step 1: Navigate to Lab Directory
+
 ```bash
-pip install -r requirements.txt
+cd 02-agentcore-memory
 ```
 
-2. **Deploy to production**
+## Step 2: Install Dependencies
+
 ```bash
-# Configure with memory enabled
+pip install -r deployment/requirements.txt
+```
+
+## Step 3: Configure the Agent
+
+Navigate to the deployment directory and configure the agent:
+
+```bash
+cd deployment
+```
+
+Configure the agent with memory enabled:
+
+```bash
 agentcore configure -e my_agent_memory.py
 # Select 'yes' for memory
 # Select 'yes' for long-term memory extraction
+```
 
-# Launch to production
+## Step 4: Deploy to Production
+
+Launch the agent to production:
+
+```bash
 agentcore launch
 ```
 
-3. **Test memory functionality**
+## Step 5: Test Memory Functionality
 
-The test scripts use boto3 to programmatically invoke your deployed agent via the `InvokeAgentRuntime` operation. This allows automated testing of memory capabilities across different sessions.
+Use the `agentcore invoke` CLI command to test memory capabilities. The CLI supports `--session-id` and `--user-id` flags for testing different memory scenarios.
+
+### Test Short-term Memory (within session)
+
+Store information in a session:
 
 ```bash
-# Test short-term memory (within session)
-python test_short_memory.py "AGENT_ARN"
-
-# Test long-term memory (across sessions)
-python test_long_memory.py "AGENT_ARN"
-
-# Or using environment variables
-export AGENT_ARN="your-agent-arn"
-python test_short_memory.py
-python test_long_memory.py
+agentcore invoke --session-id session1-alice-memory-test-12345678 --user-id alice '{"prompt": "My name is Alice and I love pizza"}'
 ```
 
-**Boto3 Integration**: The tests use the AWS SDK to call `bedrock-agentcore:InvokeAgentRuntime`, requiring your agent ARN and appropriate permissions. Each test creates unique session IDs to simulate different user interactions.
+Recall information in the same session:
 
-## Memory Configuration
+```bash
+agentcore invoke --session-id session1-alice-memory-test-12345678 --user-id alice '{"prompt": "What is my name and what do I love?"}'
+```
 
-The agent uses AgentCore Memory SDK for integration with Strands Agents. For complete SDK documentation, see: https://github.com/aws/bedrock-agentcore-sdk-python/tree/main/src/bedrock_agentcore/memory
+### Test Long-term Memory (across sessions)
+
+Store preferences in session 1:
+
+```bash
+agentcore invoke --session-id session1-alice-memory-test-12345678 --user-id alice '{"prompt": "I prefer vegetarian food and work as a teacher"}'
+```
+
+Wait a moment for long-term memory extraction, then test recall in different session:
+
+```bash
+agentcore invoke --session-id session2-alice-memory-test-87654321 --user-id alice '{"prompt": "What do you know about my food preferences and job?"}'
+```
+
+Each command uses different session IDs to simulate different conversations, while the same user ID enables cross-session memory.
+
+>The tests use the AWS SDK to call `bedrock-agentcore:InvokeAgentRuntime`, requiring your agent ARN and appropriate permissions.
+
+## Step 6: Understanding Memory Configuration
+
+The agent uses [AgentCore Memory SDK](https://github.com/aws/bedrock-agentcore-sdk-python/tree/main/src/bedrock_agentcore/memory) for integration with Strands Agents.
+
+### Automatic Memory Setup
+
+When you run `agentcore configure` and enable memory, the AgentCore CLI automatically creates the memory resource (if needed) and sets the `BEDROCK_AGENTCORE_MEMORY_ID` environment variable during `agentcore launch`. Your agent code reads this variable automatically - no manual configuration needed.
 
 ### Basic Memory Setup
 ```python
@@ -78,7 +119,7 @@ from bedrock_agentcore.memory import MemoryClient
 from bedrock_agentcore.memory.integrations.strands.config import AgentCoreMemoryConfig, RetrievalConfig
 
 # Create memory client
-client = MemoryClient(region_name="us-east-1")
+client = MemoryClient(region_name="us-west-2") #your region
 
 # Create memory store
 basic_memory = client.create_memory(
@@ -109,14 +150,7 @@ agent = Agent(
 )
 ```
 
-## What's Included
-
-- [`my_agent_memory.py`](my_agent_memory.py) - Agent with AgentCore Memory integration
-- [`test_short_memory.py`](test_short_memory.py) - Test short-term memory within sessions
-- [`test_long_memory.py`](test_long_memory.py) - Test long-term memory across sessions
-- [`requirements.txt`](requirements.txt) - Required packages for AgentCore Memory
-
-## The invoke Function
+## Step 7: Understanding the Agent Code
 
 The `invoke` function is the main entry point for your AgentCore agent. It:
 
@@ -144,48 +178,64 @@ def invoke(payload, context):
     return {"response": result.message}
 ```
 
-## Memory Testing
+## Step 8: Test Memory with Python Applications (Optional)
 
-### Short-term Memory Test
+For more comprehensive testing, you can use the provided test applications that demonstrate both short-term and long-term memory capabilities.
+
+### Test Short-term Memory
+
+Use the `test_short_memory.py` application to test memory within the same session:
+
 ```bash
-python test_short_memory.py "AGENT_ARN"
+# Set your agent ARN (get from agentcore status)
+export AGENT_ARN="YOUR-ARN"
 
-# This test:
-# 1. Stores user info in a session
-# 2. Asks agent to recall info in same session
-# 3. Verifies context is maintained
+# Run the short-term memory test
+python test_short_memory.py
 ```
 
-### Long-term Memory Test
-```bash
-python test_long_memory.py "AGENT_ARN"
+This script will test:
+- Information storage within a session
+- Memory recall in the same session
+- Session-based context retention
 
-# This test:
-# 1. Stores user preferences in session 1
-# 2. Waits 25 seconds for LTM extraction
-# 3. Tests recall in different session 2
-# 4. Verifies cross-session memory
+### Test Long-term Memory
+
+Use the `test_long_memory.py` application to test memory persistence across different sessions:
+
+```bash
+# Set your agent ARN (get from agentcore status)
+export AGENT_ARN="YOUR-ARN"
+
+# Run the long-term memory test
+python test_long_memory.py
 ```
 
-## Key Benefits
+This script will test:
+- Information storage in one session
+- Memory extraction and persistence
+- Cross-session memory recall
+- User-specific memory isolation
 
-- **Contextual conversations** - Agents remember what was discussed
-- **Personalized experiences** - User preferences persist across sessions
-- **Reduced repetition** - Users don't need to re-explain context
-- **Intelligent insights** - Automatic extraction of important information
-- **Scalable architecture** - Fully managed service handles complexity
+**Key Points for Memory Testing:**
+- **Agent ARN**: Get this from `agentcore status` output
+- **Session IDs**: Must be 33+ characters for proper session management
+- **User IDs**: Enable user-specific memory isolation
+- **Wait Time**: Allow time between sessions for long-term memory extraction
 
-## Prerequisites
-
-- AWS account with appropriate permissions
-- Python 3.10+ environment
-- AWS CLI configured
-- AgentCore Memory service enabled
-
-## Clean Up
+## Step 9: Clean Up
 
 ```bash
 agentcore destroy
 ```
 
-*This lab focuses on AgentCore Memory. Combine with AgentCore Runtime for complete production-ready AI agents with persistent memory.*
+## Resources
+
+### Documentation
+- [What is Amazon Bedrock AgentCore?](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/what-is-bedrock-agentcore.html)
+- [AgentCore Memory SDK](https://github.com/aws/bedrock-agentcore-sdk-python/tree/main/src/bedrock_agentcore/memory)
+- [AgentCore Memory Guide](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/memory.html)
+- [Programmatic Agent Invocation](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-toolkit.html#invoke-programmatically)
+
+### Code Examples
+- [AWS Labs AgentCore Samples](https://github.com/awslabs/amazon-bedrock-agentcore-samples/)

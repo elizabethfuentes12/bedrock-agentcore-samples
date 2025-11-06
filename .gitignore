@@ -1,6 +1,3 @@
-# AgentCore configuration files (contain sensitive information)
-.bedrock_agentcore.yaml
-
 # Python
 __pycache__/
 *.py[cod]
@@ -24,26 +21,57 @@ wheels/
 *.egg
 
 # Virtual environments
-.venv/
+.env
+.venv
+env/
 venv/
 ENV/
-env/
+env.bak/
+venv.bak/
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
 
 # OS
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+
+# AgentCore generated files
+.bedrock_agentcore/
+.bedrock_agentcore.yaml
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
+docker-compose.yaml
+*.dockerfile
+
+# YAML configuration files
+config.yml
+config.yaml
+configuration.yml
+configuration.yaml
+settings.yml
+settings.yaml
+
+# AWS
+.aws/
+*.pem
 
 # Logs
 *.log
+logs/
 
 # Environment variables
-.env
 .env.local
-.env.*.local
-.bedrock_agentcore
+.env.production

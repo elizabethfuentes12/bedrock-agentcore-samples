@@ -16,6 +16,9 @@ def test_short_memory(agent_arn, region=None):
     
     # Generate session ID
     session_id = str(uuid.uuid4())
+
+    # Generate user ID
+    user_id = str(uuid.uuid4())
     
     print(f"Testing short-term memory in session: {session_id}")
     print(f"Region: {region}")
@@ -23,6 +26,7 @@ def test_short_memory(agent_arn, region=None):
     
     try:
         # First message - establish context
+        print(f"User: {user_id}")
         print("Message 1: Setting context...")
         print(f"Session: {session_id}")
         prompt = "My name is Alice and I like chocolate ice cream"
@@ -32,6 +36,7 @@ def test_short_memory(agent_arn, region=None):
         response1 = client.invoke_agent_runtime(
             agentRuntimeArn=agent_arn,
             runtimeSessionId=session_id,
+            runtimeUserId = user_id,
             payload=payload1,
             qualifier="DEFAULT"
         )
@@ -45,6 +50,7 @@ def test_short_memory(agent_arn, region=None):
         print()
         
         # Second message - test memory recall
+        print(f"User: {user_id}")
         print("Message 2: Testing memory recall...")
         print(f"Session: {session_id}")
         prompt = "What is my name and what do I like?"
@@ -54,6 +60,7 @@ def test_short_memory(agent_arn, region=None):
         response2 = client.invoke_agent_runtime(
             agentRuntimeArn=agent_arn,
             runtimeSessionId=session_id,  # Same session
+            runtimeUserId = user_id,
             payload=payload2,
             qualifier="DEFAULT"
         )
